@@ -1,6 +1,10 @@
-export default function Input({ label, textarea = false, ...props }) {
-  const classes =
-    "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-300 text-stone-600 focus:outline-none focus:border-stone-600";
+import { forwardRef } from "react";
+
+const Input = forwardRef(({ label, textarea = false, ...props }, ref) => {
+  const valid =
+    "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-300 text-stone-600 focus:outline-none focus:border-stone-400";
+  const invalid =
+    "w-full p-1 border-b-2 rounded-sm border-red-200 bg-red-200 text-stone-600 focus:outline-none focus:border-red-400";
 
   return (
     <>
@@ -9,11 +13,13 @@ export default function Input({ label, textarea = false, ...props }) {
           {label}
         </label>
         {textarea ? (
-          <textarea className={classes} {...props} />
+          <textarea ref={ref} className={valid} {...props} />
         ) : (
-          <input {...props} className={classes} />
+          <input ref={ref} className={valid} {...props} />
         )}
       </p>
     </>
   );
-}
+});
+
+export default Input;

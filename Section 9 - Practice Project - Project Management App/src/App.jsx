@@ -4,28 +4,33 @@ import NoProjectSelected from "./components/NoProjectSelected";
 import { useState } from "react";
 
 function App() {
-  const [newProject, setNewProject] = useState(undefined);
-  const [projects, setProjects] = useState([]);
+  const [state, setState] = useState({
+    page: undefined,
+    projects: [],
+  });
 
   function openNewProject() {
-    setNewProject(null);
+    setState((prevState) => ({ ...prevState, page: null }));
   }
   function closeNewProject() {
-    setNewProject(undefined);
+    setState((prevState) => ({ ...prevState, page: undefined }));
   }
   function addProject(project) {
     // Append the new projects to the projects array and update state
-    setProjects((prevProjects) => [...prevProjects, project]);
+    setState((prevState) => ({
+      ...prevState,
+      projects: [...prevState.projects, project],
+    }));
   }
 
   function renderComponent() {
-    if (newProject === undefined) {
+    if (state.page === undefined) {
       return <NoProjectSelected newProject={openNewProject} />;
-    } else {
+    } else if (state.page === null) {
       return (
         <NewProject
           cancel={closeNewProject}
-          projects={projects}
+          projects={state.projects}
           addProject={addProject}
         />
       );
@@ -33,8 +38,8 @@ function App() {
   }
 
   return (
-    <main className="h-screen my-8 flex gap-8">
-      <Sidebar newProject={openNewProject} projects={projects} />
+    <main className='h-screen my-8 flex gap-8'>
+      <Sidebar newProject={openNewProject} projects={state.projects} />
       {renderComponent()}
     </main>
   );

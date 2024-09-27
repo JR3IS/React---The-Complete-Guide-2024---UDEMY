@@ -1,7 +1,8 @@
 import { forwardRef } from "react";
+import Task from "./Task";
 
 const SelectedProject = forwardRef(
-  ({ projects, index, deleteProject, addTask }, ref) => {
+  ({ projects, index, deleteProject, addTask, deleteTask }, ref) => {
     //  Format the date
     const formattedDate = new Date(projects[index].dueDate).toLocaleDateString(
       "en-US",
@@ -44,6 +45,17 @@ const SelectedProject = forwardRef(
             Add Task
           </button>
         </div>
+        <ul className="p-4 mt-8 rounded-md bg-stone-100">
+          {projects[index].tasks.map((task, taskIndex) => (
+            <li key={taskIndex} className="flex justify-between my-4">
+              <Task
+                tasks={projects[index].tasks}
+                taskIndex={taskIndex}
+                deleteTask={deleteTask}
+              />
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

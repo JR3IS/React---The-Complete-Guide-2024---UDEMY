@@ -9,7 +9,6 @@ function App() {
     page: undefined,
     projects: [],
     selectedProjectIndex: null,
-    tasks: [],
   });
 
   const inputTask = useRef();
@@ -17,16 +16,19 @@ function App() {
   function openNewProject() {
     setState((prevState) => ({ ...prevState, page: null }));
   }
+
   function closeNewProject() {
     setState((prevState) => ({ ...prevState, page: undefined }));
   }
+
   function addProject(project) {
     // Append the new projects to the projects array and update state
     setState((prevState) => ({
       ...prevState,
-      projects: [...prevState.projects, project],
+      projects: [...prevState.projects, { ...project, tasks: [] }],
     }));
   }
+
   function selectProject(index) {
     setState((prevState) => ({
       ...prevState,
@@ -34,6 +36,7 @@ function App() {
       page: "selected",
     }));
   }
+
   function deleteProject(index) {
     setState((prevState) => ({
       ...prevState,
@@ -44,13 +47,26 @@ function App() {
   }
 
   function addTask() {
-    setState((prevState) => ({
-      ...prevState,
-      tasks: [...prevState.tasks, inputTask.current.value],
-    }));
-    // Clear input after submition
-    inputTask.current.value = "";
-    console.log(state.tasks);
+    const taskValue = inputTask.current.value;
+    if (taskValue.trim() !== "") {
+      setState((prevState) => {
+        const newProjects = [...prevState.projects];
+        // Add the task to the selected project's tasks array
+        newProjects[state.selectedProjectIndex].tasks.push(taskValue);
+        return { ...prevState, projects: newProjects };
+      });
+      // Clear input after submition
+      inputTask.current.value = "";
+    }
+  }
+
+  function deleteTask(taskIndex) {
+    setState((prevState) => {
+      const newProjects = [...prevState.projects];
+      // Remove the task of the selected project's task array
+      newProjects[state.selectedProjectIndex].tasks.splice(taskIndex, 1);
+      return { ...prevState, projects: newProjects };
+    });
   }
 
   function renderComponent() {
@@ -72,6 +88,7 @@ function App() {
           deleteProject={deleteProject}
           ref={inputTask}
           addTask={addTask}
+          deleteTask={deleteTask}
         />
       );
     }
